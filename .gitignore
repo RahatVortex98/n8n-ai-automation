@@ -1,0 +1,8 @@
+.env
+*.env
+!.env.example
+credentials*
+database.sqlite
+.n8n/
+node_modules/
+*.log
