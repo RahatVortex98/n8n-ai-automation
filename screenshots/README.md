@@ -1,2 +1,2 @@
-Put one screenshot per workflow here, named like the JSON file:
-`02-rag-ingestion.png`. Link them from the main README.
+One screenshot per workflow, named like the JSON file (`07-rag-ingestion.png`).
+Add more as you build them.

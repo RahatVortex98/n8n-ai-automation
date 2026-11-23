@@ -19,6 +19,18 @@ Backend developer (Laravel / Django) adding AI automation, RAG and agents to the
 
 Exported JSON files live in [`workflows/`](workflows/). Personal IDs and emails are replaced with `YOUR_...` placeholders; add your own after importing.
 
+Full descriptions: [docs/workflow-summaries.md](docs/workflow-summaries.md)
+
+### Screenshots
+
+**07 RAG ingestion** (one PDF became 74 chunks in Pinecone)
+
+![RAG ingestion](screenshots/07-rag-ingestion.png)
+
+**05 Sentiment analysis**
+
+![Sentiment analysis](screenshots/05-sentiment-analysis.png)
+
 ## RAG pipeline (workflows 07 and 08)
 
 ```mermaid
@@ -53,6 +65,7 @@ Exports contain credential names only, never secrets. Keys go in n8n credentials
 
 ## Notes
 
+- [Workflow summaries](docs/workflow-summaries.md)
 - [RAG and vector databases](docs/rag-and-vector-db.md)
 - [Fine-tuning vs RAG](docs/fine-tuning-vs-rag.md)
 - [Troubleshooting: Gemini embeddings and Pinecone](docs/troubleshooting.md)
