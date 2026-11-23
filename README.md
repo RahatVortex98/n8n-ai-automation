@@ -6,16 +6,20 @@ Backend developer (Laravel / Django) adding AI automation, RAG and agents to the
 
 ## Workflows
 
-| # | Workflow | What it does | Status |
-|---|----------|--------------|--------|
-| 01 | Airtable + AI + Gmail | Basic automation: Airtable record, AI step, Gmail send | add JSON |
-| 02 | RAG ingestion | Google Drive PDF, chunks, Gemini embeddings, Pinecone | add JSON |
-| 03 | RAG chatbot | Chat agent that answers from the PDFs, with sources | planned |
-| 04 | AI agent with tools | Agent that calls HTTP/DB tools (Laravel or Django API) | planned |
+| # | Workflow | Flow | Tools |
+|---|----------|------|-------|
+| 01 | [Airtable form to record](workflows/01-airtable-form-to-record.json) | Form submission, create Airtable record | Form, Airtable |
+| 02 | [Airtable search and export](workflows/02-airtable-search-export-file.json) | Schedule, search Airtable, convert to file, write to disk | Schedule, Airtable |
+| 03 | [Google Sheets spreadsheet](workflows/03-google-sheets-create-spreadsheet.json) | Manual run, create a Google spreadsheet | Google Sheets |
+| 04 | [Order notification email](workflows/04-order-notification-email.json) | New Airtable order, AI writes the summary (OpenAI or Gemini), code node parses JSON, Gmail sends it to the team | Airtable, OpenAI, Gemini, Code, Gmail |
+| 05 | [Sentiment analysis](workflows/05-sentiment-analysis.json) | Form, Gemini classifies sentiment, merge, log row in Sheets, Gmail alert | Form, Gemini, Merge, Sheets, Gmail |
+| 06 | [Open-source LLM agent](workflows/06-open-source-llm-ollama-agent.json) | Chat trigger, AI Agent running a local Ollama model | Chat, AI Agent, Ollama |
+| 07 | [RAG ingestion](workflows/07-rag-ingestion-pinecone.json) | New PDF in Drive, download, chunk, Gemini embeddings, store in Pinecone | Drive, Gemini, Pinecone |
+| 08 | RAG chatbot | Chat agent that answers from the stored PDFs, with sources | planned |
 
-Exported JSON files live in [`workflows/`](workflows/). Screenshots live in [`screenshots/`](screenshots/).
+Exported JSON files live in [`workflows/`](workflows/). Personal IDs and emails are replaced with `YOUR_...` placeholders; add your own after importing.
 
-## RAG pipeline (workflow 02 and 03)
+## RAG pipeline (workflows 07 and 08)
 
 ```mermaid
 flowchart LR
@@ -35,8 +39,8 @@ flowchart LR
 
 ## Stack
 
-n8n (self-hosted, local), Google Gemini (chat and embeddings), Pinecone (vector DB),
-Google Drive, Airtable, Gmail.
+n8n (self-hosted, local), Google Gemini (chat and embeddings), OpenAI, Ollama, Pinecone (vector DB),
+Google Drive, Google Sheets, Airtable, Gmail.
 
 ## Run a workflow
 
@@ -55,7 +59,8 @@ Exports contain credential names only, never secrets. Keys go in n8n credentials
 
 ## Roadmap
 
-- [x] Basic automation (Airtable, AI, Gmail)
+- [x] Basic automation (forms, Airtable, Google Sheets, Gmail)
+- [x] LLM steps with OpenAI, Gemini and a local Ollama model
 - [x] RAG ingestion from Google Drive into Pinecone
 - [ ] RAG chatbot with sources and an "I don't know" rule
 - [ ] AI agent with tool calling (own Laravel/Django API as a tool)

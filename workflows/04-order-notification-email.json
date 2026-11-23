@@ -1,0 +1,198 @@
+{
+  "name": "Order Msg send to owner mail",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "authentication": "airtableTokenApi",
+        "baseId": {
+          "__rl": true,
+          "value": "https://airtable.com/YOUR_AIRTABLE_BASE_ID/YOUR_AIRTABLE_TABLE_ID_2/YOUR_AIRTABLE_VIEW_ID?blocks=hide",
+          "mode": "url"
+        },
+        "tableId": {
+          "__rl": true,
+          "value": "https://airtable.com/YOUR_AIRTABLE_BASE_ID/YOUR_AIRTABLE_TABLE_ID_2/YOUR_AIRTABLE_VIEW_ID?blocks=hide",
+          "mode": "url"
+        },
+        "triggerField": "Order Number",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.airtableTrigger",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -32
+      ],
+      "id": "373c2a4b-1c32-41a5-b8be-3ffb7132d57d",
+      "name": "Airtable Trigger",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "2DvbrHzpwCP8dPQW",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-2025-04-14",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-2025-04-14"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are responsible for customer orders.Your task is to collect incoming  information about new orders and create a clear summery that will be sent via email to the team.The mail should signed with \"Customer Success Team\".\n\nHere are the details of the customer order:\n\nOrder Number:{{ $json.fields['Order Number'] }}\nCustomer:{{ $json.fields.Customer }}\nProduct:{{ $json.fields.Product }}\nQuantity:{{ $json.fields.Quantity }}\nPrice:{{ $json.fields.Price }}\nDate:{{ $json.fields.Date }}\nStatus:{{ $json.fields.Status }}\n\nPlease provide the following output parameters:\n\nemail_subject\nemail_content"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -704,
+        -224
+      ],
+      "id": "b569bf4f-3299-438c-b7ea-aac62c14cf94",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ICS6V7qVcsalDqLQ",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "YOUR_EMAIL@example.com",
+        "subject": "={{ $json.email_subject }}",
+        "message": "={{ $json.email_content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        -32
+      ],
+      "id": "b937187e-2687-48b9-8ce2-dbfd8d97f9cf",
+      "name": "Send a message",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9Mm9HYiGGoRE27n3",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3-flash-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are responsible for customer orders.Your task is to collect incoming  information about new orders and create a clear summery that will be sent via email to the team.The mail should signed with \"Customer Success Team\".\n\nHere are the details of the customer order:\n\nOrder Number:{{ $json.fields['Order Number'] }}\nCustomer:{{ $json.fields.Customer }}\nProduct:{{ $json.fields.Product }}\nQuantity:{{ $json.fields.Quantity }}\nPrice:{{ $json.fields.Price }}\nDate:{{ $json.fields.Date }}\nStatus:{{ $json.fields.Status }}\n\nPlease provide the following output parameters:\n\nemail_subject\nemail_content\n\nReturn ONLY valid JSON with exactly these two keys: \"email_subject\" and \"email_content\". No markdown, no extra text, no code fences."
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -336,
+        -32
+      ],
+      "id": "10cdf6c6-badd-439d-b3b6-c2399b8c9b9d",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "BqrtdgnmDCqBVVCL",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.content.parts[0].text.trim();\n\nlet email_subject, email_content;\n\ntry {\n  const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());\n  email_subject = parsed.email_subject;\n  email_content = parsed.email_content;\n} catch (e) {\n  const match = raw.match(/\\*\\*email_subject\\*\\*\\s*([\\s\\S]*?)\\s*\\*\\*email_content\\*\\*\\s*([\\s\\S]*)/);\n  if (!match) throw new Error('Unexpected format: ' + raw);\n  email_subject = match[1].trim();\n  email_content = match[2].trim();\n}\n\nemail_content = email_content.replace(/\\n/g, '<br>');\n\nreturn { json: { email_subject, email_content } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        -32
+      ],
+      "id": "0df35dbe-81bf-46f8-92f5-67e23781ef9f",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Airtable Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        []
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "69cf5e56-8d20-46b8-b083-92a62ffcd823",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "id": "kOwaqxmSQDMw4x0T",
+  "tags": []
+}

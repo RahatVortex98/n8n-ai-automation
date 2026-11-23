@@ -1,13 +1,15 @@
 # Workflows
 
-Export from n8n: open the workflow, **⋯ menu, Download**.
+Exported from n8n (workflow menu, Download) and cleaned before committing:
+emails, Airtable/Drive/Sheet IDs and the n8n instance ID are replaced with `YOUR_...` placeholders,
+and credentials are references only (no secrets).
 
-Naming: `NN-short-name.json`, for example `02-rag-ingestion.json`.
+To use one: n8n, Workflows, Import from file, then set your own credentials and replace the `YOUR_...` values.
 
-Before committing, scan for secrets:
+Naming: `NN-short-name.json`.
+
+Scan before committing a new export:
 
 ```powershell
-Select-String -Path workflows\*.json -Pattern "pcsk_|sk-|AIza|Bearer|api[_-]?key"
+Select-String -Path workflows\*.json -Pattern "pcsk_|sk-|AIza|Bearer|api[_-]?key|@gmail"
 ```
-
-Remove any real key found in HTTP Request or Code nodes.
