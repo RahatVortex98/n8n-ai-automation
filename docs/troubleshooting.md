@@ -22,3 +22,13 @@ see [`scripts/create-pinecone-index.ps1`](../scripts/create-pinecone-index.ps1)
 ## 5. Pinecone 401 "Invalid API key"
 Placeholder left in the command, or key copied wrongly. Never paste a real key into chats,
 issues or commits. If one leaks, delete it in the Pinecone console and create a new one.
+
+## 6. Gemini 503 "model is currently experiencing high demand"
+Google's servers are overloaded. It happens on preview and stable models alike. Turn on
+**Retry On Fail** (5 tries, 5000 ms) on the AI Agent and every Gemini model node, switch to a less busy
+stable model (for example a Flash-Lite model), or add a fallback model. Local Ollama is a good backup.
+
+## 7. Gemini 404 "model is no longer available to new users"
+Google limits the 2.5 models (such as `gemini-2.5-pro` and `gemini-2.5-flash`) to accounts that used them before.
+Use a current model such as `gemini-3.8-flash` or `gemini-3.5-flash-lite`, and change **every** Gemini model node
+(the agent's and the one inside the Q&A tool).

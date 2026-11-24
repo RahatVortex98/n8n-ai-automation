@@ -51,6 +51,37 @@ turns it into chunks, Gemini creates embeddings, and the Pinecone Vector Store n
 
 ![RAG ingestion workflow](../screenshots/07-rag-ingestion.png)
 
-## 08 RAG chatbot (planned)
-Chat trigger, AI Agent with the Pinecone store as a tool (same Gemini embeddings), a prompt that answers
-only from the retrieved chunks, shows sources, and says "I don't know" when the answer is missing.
+## 08 RAG chatbot
+**Flow:** Chat trigger, AI Agent. The agent has a Gemini chat model, Simple Memory and one tool.
+The tool, "Answer questions with a vector store", combines the Pinecone Vector Store
+(`n8n-rag-v2`, namespace `n8n-rag`, Gemini embeddings) with its own Gemini chat model.
+
+How a question is answered:
+1. The Chat trigger passes the message to the AI Agent.
+2. The agent reads its prompt and the memory (recent messages) and decides whether it needs the documents.
+3. It calls the Q&A tool, which embeds the question, finds the closest chunks in Pinecone, and a Gemini model writes an answer from them.
+4. The agent replies, and Simple Memory saves the exchange.
+
+In my test run the tool was called 3 times and the embeddings node produced 9216 values (3 searches at 3072 dimensions).
+
+**Agent prompt (cleaned up):**
+```
+You are an AI assistant specialized in analyzing Tesla's quarterly financial reports.
+Answer questions accurately and precisely using the vector database, which contains the uploaded reports.
+
+ALWAYS call the vector store tool before answering. Only provide information you retrieve from the documents.
+If the information is not in the documents or is unclear, say: "I don't have this information in the uploaded reports."
+Never answer from your own knowledge.
+
+Response format:
+- Concise and to the point
+- Specific numbers and facts when available
+- Say which quarterly report each fact comes from
+```
+
+**Learned:** AI Agent vs fixed workflow, tools, memory vs vector store, chunks and embeddings, handling Gemini 503 errors
+with Retry On Fail and a stable model (see [troubleshooting](troubleshooting.md)).
+
+![RAG chatbot workflow](../screenshots/08-rag-chatbot.png)
+
+The workflow JSON will be added as `workflows/08-rag-chatbot.json`.

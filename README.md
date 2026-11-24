@@ -15,7 +15,7 @@ Backend developer (Laravel / Django) adding AI automation, RAG and agents to the
 | 05 | [Sentiment analysis](workflows/05-sentiment-analysis.json) | Form, Gemini classifies sentiment, merge, log row in Sheets, Gmail alert | Form, Gemini, Merge, Sheets, Gmail |
 | 06 | [Open-source LLM agent](workflows/06-open-source-llm-ollama-agent.json) | Chat trigger, AI Agent running a local Ollama model | Chat, AI Agent, Ollama |
 | 07 | [RAG ingestion](workflows/07-rag-ingestion-pinecone.json) | New PDF in Drive, download, chunk, Gemini embeddings, store in Pinecone | Drive, Gemini, Pinecone |
-| 08 | RAG chatbot | Chat agent that answers from the stored PDFs, with sources | planned |
+| 08 | RAG chatbot (JSON coming) | Chat trigger, AI Agent (Gemini) with Simple Memory and a Pinecone Q&A tool; answers only from the stored reports | Chat, AI Agent, Gemini, Memory, Pinecone |
 
 Exported JSON files live in [`workflows/`](workflows/). Personal IDs and emails are replaced with `YOUR_...` placeholders; add your own after importing.
 
@@ -30,6 +30,10 @@ Full descriptions: [docs/workflow-summaries.md](docs/workflow-summaries.md)
 **05 Sentiment analysis**
 
 ![Sentiment analysis](screenshots/05-sentiment-analysis.png)
+
+**08 RAG chatbot** (AI Agent with memory and a Pinecone tool)
+
+![RAG chatbot](screenshots/08-rag-chatbot.png)
 
 ## RAG pipeline (workflows 07 and 08)
 
@@ -75,7 +79,7 @@ Exports contain credential names only, never secrets. Keys go in n8n credentials
 - [x] Basic automation (forms, Airtable, Google Sheets, Gmail)
 - [x] LLM steps with OpenAI, Gemini and a local Ollama model
 - [x] RAG ingestion from Google Drive into Pinecone
-- [ ] RAG chatbot with sources and an "I don't know" rule
+- [x] RAG chatbot: AI Agent + memory + Pinecone tool (next: sources and a strict "I don't know" rule)
 - [ ] AI agent with tool calling (own Laravel/Django API as a tool)
 - [ ] Lead capture, AI qualification, CRM, email follow-up
 - [ ] Order/invoice processing with AI extraction
