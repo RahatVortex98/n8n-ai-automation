@@ -54,7 +54,7 @@ turns it into chunks, Gemini creates embeddings, and the Pinecone Vector Store n
 ## 08 RAG chatbot
 **Flow:** Chat trigger, AI Agent. The agent has a Gemini chat model, Simple Memory and one tool.
 The tool, "Answer questions with a vector store", combines the Pinecone Vector Store
-(`n8n-rag-v2`, namespace `n8n-rag`, Gemini embeddings) with its own Gemini chat model.
+(index `n8n-rag-v2`, Gemini embeddings) with its own Gemini chat model.
 
 How a question is answered:
 1. The Chat trigger passes the message to the AI Agent.
@@ -64,7 +64,9 @@ How a question is answered:
 
 In my test run the tool was called 3 times and the embeddings node produced 9216 values (3 searches at 3072 dimensions).
 
-**Agent prompt (cleaned up):**
+**Agent prompt as exported:** answer from the Q3 and Q4 reports only, concise, with numbers, and name the quarter each fact comes from.
+
+**Stricter version I plan to use (cleaned up, with "always call the tool"):**
 ```
 You are an AI assistant specialized in analyzing Tesla's quarterly financial reports.
 Answer questions accurately and precisely using the vector database, which contains the uploaded reports.
@@ -84,4 +86,10 @@ with Retry On Fail and a stable model (see [troubleshooting](troubleshooting.md)
 
 ![RAG chatbot workflow](../screenshots/08-rag-chatbot.png)
 
-The workflow JSON will be added as `workflows/08-rag-chatbot.json`.
+**Settings in the export:** both Gemini chat models are `gemini-3.5-flash-lite`, Simple Memory keeps the last 10 messages,
+and the Pinecone node uses index `n8n-rag-v2` with no namespace set.
+
+**Check:** the ingestion workflow (07) writes to namespace `n8n-rag`, but the chatbot's Pinecone node has no namespace.
+The namespace must be the same in both workflows, or the chatbot searches an empty namespace and finds nothing.
+
+Workflow file: [`workflows/08-rag-chatbot.json`](../workflows/08-rag-chatbot.json)

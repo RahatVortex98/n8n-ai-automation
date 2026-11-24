@@ -15,7 +15,7 @@ Backend developer (Laravel / Django) adding AI automation, RAG and agents to the
 | 05 | [Sentiment analysis](workflows/05-sentiment-analysis.json) | Form, Gemini classifies sentiment, merge, log row in Sheets, Gmail alert | Form, Gemini, Merge, Sheets, Gmail |
 | 06 | [Open-source LLM agent](workflows/06-open-source-llm-ollama-agent.json) | Chat trigger, AI Agent running a local Ollama model | Chat, AI Agent, Ollama |
 | 07 | [RAG ingestion](workflows/07-rag-ingestion-pinecone.json) | New PDF in Drive, download, chunk, Gemini embeddings, store in Pinecone | Drive, Gemini, Pinecone |
-| 08 | RAG chatbot (JSON coming) | Chat trigger, AI Agent (Gemini) with Simple Memory and a Pinecone Q&A tool; answers only from the stored reports | Chat, AI Agent, Gemini, Memory, Pinecone |
+| 08 | [RAG chatbot](workflows/08-rag-chatbot.json) | Chat trigger, AI Agent (Gemini) with Simple Memory and a Pinecone Q&A tool; answers only from the stored reports | Chat, AI Agent, Gemini, Memory, Pinecone |
 
 Exported JSON files live in [`workflows/`](workflows/). Personal IDs and emails are replaced with `YOUR_...` placeholders; add your own after importing.
 
