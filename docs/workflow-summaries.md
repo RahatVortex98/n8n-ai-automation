@@ -111,3 +111,8 @@ The agent prompt says: search first, send only when exactly one address matches,
 **Flow:** Executed by another workflow (inputs `to`, `subject`, `message`) then Gmail Send a message.
 The workflow the mail agent calls as a tool to send an email. The Gmail fields map to `{{ $json.to }}`, `{{ $json.subject }}` and `{{ $json.message }}`.
 **Learned:** a workflow used as an agent tool must be **published**, otherwise it fails with "Workflow is not active and cannot be executed". Its trigger must define the input fields, or the agent sends everything as one `input` blob. Field names are case-sensitive, so the agent prompt must use lowercase `to`, `subject`, `message`.
+
+## 12 Email agent
+**Flow:** Chat trigger, AI Agent with Gemini (`gemini-3.5-flash-lite`), Simple Memory and a **Gmail "Send a message" tool**.
+The agent drafts and refines an email, confirms the details with the user, and sends only after approval. The Gmail tool's To, Subject and Message are filled by the model (`$fromAI`).
+**Learned:** a built-in app tool (Gmail) is the simplest way to give an agent an action, with no sub-workflow to publish. The "never send without approval" rule in the system message is a basic human-in-the-loop guard. Free-tier Gemini Pro models have a quota of 0, so use a Flash model.
