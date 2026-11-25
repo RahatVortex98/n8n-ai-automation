@@ -116,3 +116,10 @@ The workflow the mail agent calls as a tool to send an email. The Gmail fields m
 **Flow:** Chat trigger, AI Agent with Gemini (`gemini-3.5-flash-lite`), Simple Memory and a **Gmail "Send a message" tool**.
 The agent drafts and refines an email, confirms the details with the user, and sends only after approval. The Gmail tool's To, Subject and Message are filled by the model (`$fromAI`).
 **Learned:** a built-in app tool (Gmail) is the simplest way to give an agent an action, with no sub-workflow to publish. The "never send without approval" rule in the system message is a basic human-in-the-loop guard. Free-tier Gemini Pro models have a quota of 0, so use a Flash model.
+
+## 13 Daily email summary
+![Daily email summary](../screenshots/13-daily-email-summary.png)
+
+**Flow:** Schedule trigger (01:00, Asia/Dhaka) → Gmail Get many messages (`newer_than:1d`) → Aggregate into one item → Gemini (`gemini-3.5-flash-lite`) → Gmail Send a message.
+Gemini ranks the day's emails and returns an HTML fragment (priority summary and action items). The Gmail node wraps it in a styled HTML template and sends it as a digest.
+**Learned:** Aggregate turns many items into one so the model gets all emails in a single call, and asking for an HTML fragment only (no markdown fences) lets it drop straight into an email template. No agent or RAG is needed, since the steps are fixed.

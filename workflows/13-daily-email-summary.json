@@ -1,0 +1,183 @@
+{
+  "name": "Email Summery",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -640,
+        0
+      ],
+      "id": "440de21c-afcf-4bea-b1d3-cdfd282f349d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Go through every email and identify all key details, specific issues to review, and action items. Prioritize the most important emails first.\n\nOutput ONLY clean HTML fragments using <h3>, <ul>, <li>, and <strong> tags (do not include <html>, <head>, <body>, or markdown code blocks):\n\n<h3>Priority &amp; Summary</h3>\n<ul>\n  <li><strong>[Sender] - [Subject]:</strong> Key summary point</li>\n</ul>\n\n<h3>Action Items</h3>\n<ul>\n  <li><strong>[Sender/Topic]:</strong> Specific action required</li>\n</ul>\n\nInput Data:\n{{ $json.emails.toJsonString() }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        32,
+        0
+      ],
+      "id": "6cdc0cf8-dfae-4f79-8e44-94cfd7f115dc",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "you@example.com",
+        "subject": "Daily Email Summary - {{ $now.format('dd LLL yyyy') }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body {\n      font-family: Arial, Helvetica, sans-serif;\n      background-color: #f4f6f8;\n      margin: 0;\n      padding: 20px;\n      color: #222222;\n    }\n    .container {\n      max-width: 640px;\n      margin: 0 auto;\n      background-color: #ffffff;\n      border-radius: 8px;\n      padding: 24px;\n      border: 1px solid #e0e4e8;\n    }\n    .header {\n      border-bottom: 2px solid #1a73e8;\n      padding-bottom: 12px;\n      margin-bottom: 20px;\n    }\n    .header h2 {\n      margin: 0;\n      color: #1a73e8;\n      font-size: 20px;\n    }\n    .header p {\n      margin: 4px 0 0;\n      font-size: 13px;\n      color: #666666;\n    }\n    h3 {\n      color: #111111;\n      font-size: 16px;\n      margin-top: 20px;\n      margin-bottom: 8px;\n      border-left: 4px solid #1a73e8;\n      padding-left: 8px;\n    }\n    ul {\n      padding-left: 20px;\n      line-height: 1.6;\n    }\n    li {\n      margin-bottom: 8px;\n    }\n    .footer {\n      margin-top: 28px;\n      padding-top: 12px;\n      border-top: 1px solid #eeeeee;\n      font-size: 12px;\n      color: #888888;\n      text-align: center;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h2>Daily Inbox Digest</h2>\n      <p>{{ $now.format('cccc, dd LLLL yyyy') }}</p>\n    </div>\n\n    {{ $json.content.parts[0].text.replace(/```html|```/g, '') }}\n\n    <div class=\"footer\">\n      Automated daily summary generated at 7:00 AM\n    </div>\n  </div>\n</body>\n</html>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        0
+      ],
+      "id": "f3e76f1a-4b94-437d-a88a-fd3b42ec033e",
+      "name": "Send a message",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {
+          "q": "newer_than:1d"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -448,
+        0
+      ],
+      "id": "26553675-4b3a-4758-b77a-fed677df9c32",
+      "name": "Get many messages",
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "emails",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        128
+      ],
+      "id": "bc97b6fe-59a0-4d2c-b870-9cd915d6995f",
+      "name": "Aggregate"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Dhaka",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "e03b2b04-de51-4bed-ae31-5f2c91493c73",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "id": "HdRsQ6Qv9fyd2C0c",
+  "tags": []
+}
