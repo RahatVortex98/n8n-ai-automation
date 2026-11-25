@@ -1,0 +1,219 @@
+{
+  "name": "Mail agent pinecone",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -624,
+        -16
+      ],
+      "id": "5ce6952e-3850-4c91-a2dc-0507bd0b1cf1",
+      "name": "When chat message received"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# Role\nYou are an email agent. You find a person's email address and send emails for the user.\nAct immediately. If the request already names a recipient and a purpose, do not ask for more.\n\n# Tools\n- Pinecone_Vector_Store: search it for a person's email address. Always search first, by name.\n- Send_mail: sends the email. Fill To, Subject and Message.\n\n# Steps for every request\n1. Find the recipient's email with Pinecone_Vector_Store.\n2. If exactly one address matches, write the email and send it with Send_mail.\n3. If several addresses match, list them and ask which one to use. If none match, say you couldn't find an address. Never guess an address.\n4. After sending, reply with the recipient, the address, the subject, and one line saying it was sent.\n\n# Email rules\n- Never ask for details the user already gave. If the content is only a short idea like \"I liked his course\", expand it into a friendly email yourself.\n- Always include a subject line.\n- Start with \"Hello [Name],\" (no name: \"Hello,\"). End with \"Best regards, Ragnar\".\n- Short, clear, friendly, no repetition.\n- Types: information, reminder/follow-up, offer.\n- Use normal line breaks. Never write \"\\n\" as text.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -336,
+        -160
+      ],
+      "id": "1d979656-ac13-4d13-a0a8-70816cf1b950",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -336,
+        144
+      ],
+      "id": "dbcd01fb-4598-4fe4-b531-778a4408a213",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "BqrtdgnmDCqBVVCL",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Find out every mail information.",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n-rag-v2",
+          "mode": "list",
+          "cachedResultName": "n8n-rag-v2"
+        },
+        "options": {
+          "pineconeNamespace": "n8n docs"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        32,
+        -48
+      ],
+      "id": "b344e3b0-2b6b-4bed-9193-646300c291c8",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "sN01TUdIqZ4kBRlc",
+          "name": "Pinecone account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        128,
+        176
+      ],
+      "id": "a90009f6-98ca-4f17-8aec-8fe48740bcbc",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "BqrtdgnmDCqBVVCL",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -176,
+        144
+      ],
+      "id": "aea4119c-45d3-4fb3-a70a-920ef29fc9a9",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool send mail",
+        "workflowId": {
+          "__rl": true,
+          "value": "sUzhX2CL6QfOIO1g",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/sUzhX2CL6QfOIO1g",
+          "cachedResultName": "Send mails to pinecone"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        160
+      ],
+      "id": "e0ec50b3-a98f-4a7d-bc72-3c37c434790f",
+      "name": "Send mail"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send mail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "eedccb10-5abc-4e9d-b23d-a388c53bd492",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "id": "ZWy4T5imoQlouX49",
+  "tags": []
+}

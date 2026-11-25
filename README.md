@@ -16,6 +16,9 @@ Backend developer (Laravel / Django) adding AI automation, RAG and agents to the
 | 06 | [Open-source LLM agent](workflows/06-open-source-llm-ollama-agent.json) | Chat trigger, AI Agent running a local Ollama model | Chat, AI Agent, Ollama |
 | 07 | [RAG ingestion](workflows/07-rag-ingestion-pinecone.json) | New PDF in Drive, download, chunk, Gemini embeddings, store in Pinecone | Drive, Gemini, Pinecone |
 | 08 | [RAG chatbot](workflows/08-rag-chatbot.json) | Chat trigger, AI Agent (Gemini) with Simple Memory and a Pinecone Q&A tool; answers only from the stored reports | Chat, AI Agent, Gemini, Memory, Pinecone |
+| 09 | [Docs to Pinecone](workflows/09-docs-to-pinecone.json) | Manual run, read a Google Doc, chunk, Gemini embeddings, insert into Pinecone (namespace `n8n docs`) | Google Docs, Gemini, Pinecone |
+| 10 | [Mail agent](workflows/10-mail-agent-pinecone.json) | Chat trigger, AI Agent finds an email address in Pinecone, then calls a Send mail tool | Chat, AI Agent, Gemini, Memory, Pinecone |
+| 11 | [Send mail sub-workflow](workflows/11-send-mail-sub-workflow.json) | Called by the mail agent as a tool (Gmail send step still to be added) | Execute Workflow trigger |
 
 Exported JSON files live in [`workflows/`](workflows/). Personal IDs and emails are replaced with `YOUR_...` placeholders; add your own after importing.
 
@@ -80,6 +83,7 @@ Exports contain credential names only, never secrets. Keys go in n8n credentials
 - [x] LLM steps with OpenAI, Gemini and a local Ollama model
 - [x] RAG ingestion from Google Drive into Pinecone
 - [x] RAG chatbot: AI Agent + memory + Pinecone tool (next: sources and a strict "I don't know" rule)
+- [ ] Finish the mail agent: add the Gmail send step to the sub-workflow and define its inputs
 - [ ] AI agent with tool calling (own Laravel/Django API as a tool)
 - [ ] Lead capture, AI qualification, CRM, email follow-up
 - [ ] Order/invoice processing with AI extraction

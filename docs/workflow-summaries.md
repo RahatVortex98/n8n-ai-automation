@@ -93,3 +93,22 @@ and the Pinecone node uses index `n8n-rag-v2` with no namespace set.
 The namespace must be the same in both workflows, or the chatbot searches an empty namespace and finds nothing.
 
 Workflow file: [`workflows/08-rag-chatbot.json`](../workflows/08-rag-chatbot.json)
+
+## 09 Docs to Pinecone
+**Flow:** Manual run, Google Docs "Get a document", Pinecone insert. Embeddings (Gemini) and the Default Data Loader plug into the Pinecone node.
+Reads one Google Doc (a list of contacts and emails), turns it into chunks, embeds them and stores them in index `n8n-rag-v2`, namespace `n8n docs`.
+**Learned:** the Pinecone node must be in **Insert Documents** mode for the Document connector to appear; the loader must be connected to it.
+
+## 10 Mail agent
+**Flow:** Chat trigger, AI Agent with Gemini, Simple Memory and two tools.
+- **Pinecone Vector Store** in "retrieve as tool" mode (same index and namespace `n8n docs`) finds a person's email address.
+- **Send mail** is a Call n8n Workflow tool that runs workflow 11.
+
+The agent prompt says: search first, send only when exactly one address matches, ask when several match, and never guess an address.
+**Learned:** an agent can use several tools, tool descriptions and exact tool names in the prompt matter, and Pinecone can be attached straight to the agent with no Q&A node.
+
+## 11 Send mail sub-workflow
+**Flow:** Executed by another workflow (trigger only).
+The workflow the mail agent calls to send an email.
+**Status:** work in progress. It has no Gmail node yet and no input fields (`to`, `subject`, `message`), so the agent cannot send anything until those are added.
+

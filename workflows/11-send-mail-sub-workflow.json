@@ -1,0 +1,31 @@
+{
+  "name": "Send mails to pinecone",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1040,
+        -128
+      ],
+      "id": "96c4437c-f5bd-48d0-b5e7-860a025e7bed",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c197542d-c7b0-4774-a8c6-cce4f16d7bea",
+  "meta": {},
+  "nodeGroups": [],
+  "id": "sUzhX2CL6QfOIO1g",
+  "tags": []
+}
