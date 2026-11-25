@@ -123,3 +123,4 @@ The agent drafts and refines an email, confirms the details with the user, and s
 **Flow:** Schedule trigger (01:00, Asia/Dhaka) → Gmail Get many messages (`newer_than:1d`) → Aggregate into one item → Gemini (`gemini-3.5-flash-lite`) → Gmail Send a message.
 Gemini ranks the day's emails and returns an HTML fragment (priority summary and action items). The Gmail node wraps it in a styled HTML template and sends it as a digest.
 **Learned:** Aggregate turns many items into one so the model gets all emails in a single call, and asking for an HTML fragment only (no markdown fences) lets it drop straight into an email template. No agent or RAG is needed, since the steps are fixed.
+**Tips:** use the Gmail filter `in:inbox newer_than:1d` so sent mail is excluded. The Subject field must be in Expression mode to show the date, and the footer time should match the trigger time.

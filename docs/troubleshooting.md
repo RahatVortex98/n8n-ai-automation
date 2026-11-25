@@ -32,3 +32,31 @@ stable model (for example a Flash-Lite model), or add a fallback model. Local Ol
 Google limits the 2.5 models (such as `gemini-2.5-pro` and `gemini-2.5-flash`) to accounts that used them before.
 Use a current model such as `gemini-3.8-flash` or `gemini-3.5-flash-lite`, and change **every** Gemini model node
 (the agent's and the one inside the Q&A tool).
+
+## 8. Agent says "I am ready. Please provide..." and ignores the question
+The prompt was in the AI Agent's user-message field (`promptType: define`), so the agent never saw the chat text.
+Set the prompt source to **Connected Chat Trigger Node** and put the instructions in
+**Options → System Message**.
+
+## 9. "Workflow is not active and cannot be executed" (Call n8n Workflow tool)
+A workflow used as an agent tool must be **published**. Publish the sub-workflow, then reopen the tool in the
+agent. The model may report this as "the mail service is inactive", so check the tool's **Output** in the chat Logs.
+
+## 10. Sub-workflow tool gets one `input` blob, or "Required at to, subject, message"
+- The sub-workflow trigger must use **Define using fields below** (here `to`, `subject`, `message`, all String),
+  otherwise the agent sends everything as a single `input` field.
+- Field names are case-sensitive. If the system prompt says "To, Subject, Message" the model sends capitals
+  and the schema check fails. Use lowercase names in the prompt, the trigger and the tool.
+- Click ✨ on each field in the tool node, and start a new chat session so old failed calls are not copied.
+
+## 11. Gmail "Invalid email address ''" in the sub-workflow
+`to` arrived empty. Either the sub-workflow was executed directly (no data is passed), or the tool is not
+passing its fields (see 10). Test from the agent's chat, not from the sub-workflow.
+
+## 12. Gemini 429 "limit: 0" on a Pro model
+Pro models (for example `gemini-3.1-pro`) have a free-tier quota of **0**, so waiting does not help.
+Switch every Gemini node to a Flash model (`gemini-3.6-flash`, `gemini-3.5-flash-lite`).
+
+## 13. Expression not evaluated (shows `{{ ... }}` as text)
+A field must be in **Expression** mode (its value starts with `=`). Plain text with `{{ }}` is sent literally.
+Example: the subject of the daily email summary.

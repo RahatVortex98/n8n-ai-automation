@@ -77,7 +77,8 @@ Exports contain credential names only, never secrets. Keys go in n8n credentials
 - [Workflow summaries](docs/workflow-summaries.md)
 - [RAG and vector databases](docs/rag-and-vector-db.md)
 - [Fine-tuning vs RAG](docs/fine-tuning-vs-rag.md)
-- [Troubleshooting: Gemini embeddings and Pinecone](docs/troubleshooting.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [Lessons learned](docs/lessons-learned.md)
 
 ## Roadmap
 
