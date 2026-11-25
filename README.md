@@ -18,7 +18,7 @@ Backend developer (Laravel / Django) adding AI automation, RAG and agents to the
 | 08 | [RAG chatbot](workflows/08-rag-chatbot.json) | Chat trigger, AI Agent (Gemini) with Simple Memory and a Pinecone Q&A tool; answers only from the stored reports | Chat, AI Agent, Gemini, Memory, Pinecone |
 | 09 | [Docs to Pinecone](workflows/09-docs-to-pinecone.json) | Manual run, read a Google Doc, chunk, Gemini embeddings, insert into Pinecone (namespace `n8n docs`) | Google Docs, Gemini, Pinecone |
 | 10 | [Mail agent](workflows/10-mail-agent-pinecone.json) | Chat trigger, AI Agent finds an email address in Pinecone, then calls a Send mail tool | Chat, AI Agent, Gemini, Memory, Pinecone |
-| 11 | [Send mail sub-workflow](workflows/11-send-mail-sub-workflow.json) | Called by the mail agent as a tool (Gmail send step still to be added) | Execute Workflow trigger |
+| 11 | [Send mail sub-workflow](workflows/11-send-mail-sub-workflow.json) | Called by the mail agent as a tool; sends the email with Gmail | Execute Workflow trigger |
 
 Exported JSON files live in [`workflows/`](workflows/). Personal IDs and emails are replaced with `YOUR_...` placeholders; add your own after importing.
 

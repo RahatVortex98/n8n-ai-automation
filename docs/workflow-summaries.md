@@ -108,7 +108,6 @@ The agent prompt says: search first, send only when exactly one address matches,
 **Learned:** an agent can use several tools, tool descriptions and exact tool names in the prompt matter, and Pinecone can be attached straight to the agent with no Q&A node.
 
 ## 11 Send mail sub-workflow
-**Flow:** Executed by another workflow (trigger only).
-The workflow the mail agent calls to send an email.
-**Status:** work in progress. It has no Gmail node yet and no input fields (`to`, `subject`, `message`), so the agent cannot send anything until those are added.
-
+**Flow:** Executed by another workflow (inputs `to`, `subject`, `message`) then Gmail Send a message.
+The workflow the mail agent calls as a tool to send an email. The Gmail fields map to `{{ $json.to }}`, `{{ $json.subject }}` and `{{ $json.message }}`.
+**Learned:** a workflow used as an agent tool must be **published**, otherwise it fails with "Workflow is not active and cannot be executed". Its trigger must define the input fields, or the agent sends everything as one `input` blob. Field names are case-sensitive, so the agent prompt must use lowercase `to`, `subject`, `message`.
