@@ -21,6 +21,7 @@ Backend developer (Laravel / Django) adding AI automation, RAG and agents to the
 | 11 | [Send mail sub-workflow](workflows/11-send-mail-sub-workflow.json) | Called by the mail agent as a tool; sends the email with Gmail | Execute Workflow trigger |
 | 12 | [Email agent](workflows/12-email-agent.json) | Chat agent that drafts an email, asks for approval, then sends it with a Gmail tool | Chat trigger, AI Agent, Gemini, Simple Memory, Gmail tool |
 | 13 | [Daily email summary](workflows/13-daily-email-summary.json) | Every night, reads the last day of Gmail, has Gemini summarise it with action items, and emails an HTML digest | Schedule trigger, Gmail, Aggregate, Gemini, Gmail |
+| 14 | [Sponsorship email automation](workflows/14-sponsorship-email-automation.json) | Reads new Gmail, classifies sponsorship emails with structured output, drafts a reply with Gemini and sends it | Gmail Trigger, Edit Fields, AI Agent + Structured Output Parser, If, Gemini, Gmail reply |
 
 Exported JSON files live in [`workflows/`](workflows/). Personal IDs and emails are replaced with `YOUR_...` placeholders; add your own after importing.
 

@@ -124,3 +124,13 @@ The agent drafts and refines an email, confirms the details with the user, and s
 Gemini ranks the day's emails and returns an HTML fragment (priority summary and action items). The Gmail node wraps it in a styled HTML template and sends it as a digest.
 **Learned:** Aggregate turns many items into one so the model gets all emails in a single call, and asking for an HTML fragment only (no markdown fences) lets it drop straight into an email template. No agent or RAG is needed, since the steps are fixed.
 **Tips:** use the Gmail filter `in:inbox newer_than:1d` so sent mail is excluded. The Subject field must be in Expression mode to show the date, and the footer time should match the trigger time.
+
+## 14 Sponsorship email automation
+![Sponsorship email automation](../screenshots/14-sponsorship-email-automation.png)
+
+**Flow:** Gmail Trigger (polls every minute) → Edit Fields (`context` = From + Subject + snippet) → AI Agent with **Structured Output Parser** (`isSponsership` boolean + `reasoning`) → If → true: Gemini drafts a reply (channel rates in the prompt) → Gmail **Reply to a message**; false: No Operation.
+**Learned:** the Structured Output Parser makes the model return real fields, so the If node can test `{{ $json.output.isSponsership }}` instead of matching words. Edit Fields builds one text block for the prompt, and later nodes can read earlier ones with `$('Edit Fields').item.json.context`.
+**Known risks and improvements:**
+- The reply is sent automatically with no approval. For real use, create a draft or add a human approval step.
+- The trigger has no filter. Use `in:inbox` (and exclude your own address) so the workflow cannot react to its own sent replies.
+- A Gmail tool is attached to the Message a model node but is not needed, since the Reply node sends the mail.
